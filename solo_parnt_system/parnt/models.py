@@ -40,7 +40,7 @@ class Parent (models.Model):
     column = models.CharField(max_length=6, default='column', editable=False, blank=True, null=True)
 
     first_name = models.CharField(max_length=128)
-    mid_name = models.CharField(max_length=128)
+    mid_name = models.CharField(max_length=128, blank=True, null=True)
     last_name = models.CharField(max_length=128)
     birth_date = models.DateField()
     birth_place = models.CharField(max_length=128)
@@ -55,7 +55,7 @@ class Parent (models.Model):
     occup_address = models.CharField(max_length=128)
     monthly_income = models.DecimalField(max_digits=16, decimal_places=2)
     status_of_emp = models.CharField(max_length=128)
-    other_incom_src = models.CharField(max_length=255)
+    other_incom_src = models.CharField(max_length=255, blank=True, null=True)
     current_org_pos = models.CharField(max_length=255)
     pos_if_offcr = models.CharField(max_length=255, blank=True, null=True)
     # I

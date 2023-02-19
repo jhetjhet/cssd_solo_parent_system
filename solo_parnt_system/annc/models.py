@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.utils import timezone
 from background_task import background
 import uuid
 from twilio.rest import Client
@@ -19,7 +20,7 @@ class Announcement (models.Model):
         if not self.schedule:
             return ""
 
-        return self.schedule.strftime(r"%b %d %Y, %I:%M:%S %p")
+        return timezone.localtime(self.schedule).strftime(r"%b %d %Y, %I:%M:%S %p")
 
 @background()
 def broadcast_announcement(id):
