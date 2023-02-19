@@ -60,7 +60,7 @@ const Sidebar = () => {
                 replace
             >
                 <i className="bi bi-bookmark-fill"></i>
-                <span className="text-[15px] ml-4 text-gray-200 font-bold">Brg. Presidents</span>
+                <span className="text-[15px] ml-4 text-gray-200 font-bold">Barangay Presidents</span>
             </Link>
             <div className="my-4 bg-gray-600 h-[1px]"></div>
             {/* <div
