@@ -272,7 +272,7 @@ const BarangayPresidents = () => {
                                 onChange={__on_change__}
                             />
                             <Input
-                                label={"Contuct Number"}
+                                label={"Contact Number"}
                                 type={"number"}
                                 name="contact_number"
                                 value={brngPresData.contact_number}

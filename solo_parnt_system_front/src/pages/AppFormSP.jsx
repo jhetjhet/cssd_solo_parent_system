@@ -396,7 +396,19 @@ const AppFormSP = () => {
             action = axios.post('http://localhost:8000/api/parents/', DATA);
 
         action.then((resp) => {
-            __load_formdata__(resp.data);
+            
+            if(!parentID){
+                setPersonalInfo({...PERSONAL_INFO});
+                setFamComps([
+                    { id: uuidv4(), ...FAMILY_COMP_DATA },
+                ]);
+                setProgSrvcAvailed({...PROGRAM_SERVICE_AVAILED});
+                setHealthCard({...HEALTH_CARD});
+                setTenurialStatus({...TENURIAL_STATUS});
+            }else
+                __load_formdata__({...resp.data});
+
+            window.alert("Save successfully.");
         }).catch((err) => {
             if (err.response) {
                 let errResp = err.response.data;
@@ -420,6 +432,7 @@ const AppFormSP = () => {
                 if (errResp)
                     setPersonalInfoErrors({ ...errResp });
             }
+            window.alert("Error occur while saving data...");
         });
     }
 
@@ -644,7 +657,7 @@ const AppFormSP = () => {
                     <div className="flex justify-evenly">
                         <div className="flex-1">
                             <Input
-                                label={"Mongthly Income"}
+                                label={"Monthly Income"}
                                 type={"number"}
                                 value={personalInfo.monthly_income}
                                 name={"monthly_income"}
