@@ -79,7 +79,7 @@ class Parent (models.Model):
         if not self.expiration_date:
             return ""
 
-        return self.expiration_date.strftime(r"%b %d %Y, %I:%M:%S %p")
+        return timezone.localtime(self.expiration_date).strftime(r"%b %d %Y, %I:%M:%S %p")
 
     def reset_expiry(self):
 
