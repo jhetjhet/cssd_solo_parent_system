@@ -31,7 +31,7 @@ def broadcast_announcement(id):
         annc = Announcement.objects.filter(pk=id).first()
         if(annc):
             print(f'Preparing to broadcast scheduled @ {annc.get_str_schedule()}')
-            contact_numbers = Parent.objects.filter(active=False).values_list('contact_number', flat=True).distinct()
+            contact_numbers = Parent.objects.all().values_list('contact_number', flat=True).distinct()
             print(f'Number of recipients: {len(contact_numbers)}')
             annc.delete()
             if len(contact_numbers) > 0:
