@@ -39,7 +39,7 @@ class Parent (models.Model):
     date_registered = models.DateField(auto_now_add=True, editable=False)
     column = models.CharField(max_length=6, default='column', editable=False, blank=True, null=True)
 
-    suffix = models.CharField(max_length=64)
+    suffix = models.CharField(max_length=64, blank=True, null=True)
     first_name = models.CharField(max_length=128)
     mid_name = models.CharField(max_length=128, blank=True, null=True)
     last_name = models.CharField(max_length=128)
