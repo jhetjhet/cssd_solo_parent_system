@@ -150,10 +150,7 @@ class TenurialStatus (models.Model):
     _parent = models.OneToOneField('Parent', on_delete=models.CASCADE, related_name='tenurial_status')
     
     tenurial_status = models.CharField(max_length=128)
-    rent = models.BooleanField(default=False)
-    gov_prop = models.BooleanField(default=False)
-    riv_side = models.BooleanField(default=False)
-    pnr_site = models.BooleanField(default=False)
+    danger_zone = models.CharField(max_length=128, blank=True, null=True)
     rent_per_month = models.DecimalField(max_digits=16, decimal_places=2, blank=True, null=True)
 
 
