@@ -140,10 +140,8 @@ class HealthCard (models.Model):
 class TenurialStatus (models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     _parent = models.OneToOneField('Parent', on_delete=models.CASCADE, related_name='tenurial_status')
-
-    owned = models.BooleanField(default=False)
-    sharer = models.BooleanField(default=False)
-    priv_prop = models.BooleanField(default=False)
+    
+    tenurial_status = models.CharField(max_length=128)
     rent = models.BooleanField(default=False)
     gov_prop = models.BooleanField(default=False)
     riv_side = models.BooleanField(default=False)
