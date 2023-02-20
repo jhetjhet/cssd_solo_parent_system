@@ -132,6 +132,7 @@ class ParentSerializer (serializers.ModelSerializer):
             "active",
             "expiration_date",
 
+            "suffix",
             "first_name",
             "mid_name",
             "last_name",

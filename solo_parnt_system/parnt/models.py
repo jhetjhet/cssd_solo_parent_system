@@ -73,7 +73,14 @@ class Parent (models.Model):
     # tenurial_status = models.OneToOneField('TenurialStatus', on_delete=models.CASCADE)
 
     def get_full_name(self):
-        return f"{self.first_name}, {self.mid_name}, {self.last_name}"
+        arr_name = []
+        arr_name.append(self.first_name)
+        if self.mid_name:
+            arr_name.append(self.mid_name)
+        arr_name.append(self.last_name)
+        if self.suffix:
+            arr_name.append(self.suffix)
+        return ", ".join(arr_name)
 
     def get_str_expr_date(self):
 

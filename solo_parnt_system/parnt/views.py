@@ -50,7 +50,7 @@ class ParentViewset (viewsets.ModelViewSet):
         'mid_name',
         'last_name',
         'age',
-        'gender',
+        '=gender',
         'barangay',
     )
     filterset_fields = (
