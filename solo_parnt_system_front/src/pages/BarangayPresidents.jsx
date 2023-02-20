@@ -19,6 +19,13 @@ const BARANGAYS = [
     "Banlic",
     "Bañadero",
     "Barandal",
+    "Barangay I",
+    "Barangay II",
+    "Barangay III",
+    "Barangay IV",
+    "Barangay V",
+    "Barangay VI",
+    "Barangay VII",
     "Batino",
     "Bubuyan",
     "Bucal",
@@ -62,13 +69,6 @@ const BARANGAYS = [
     "Turbina",
     "Ulango",
     "Uwisan",
-    "Barangay I",
-    "Barangay II",
-    "Barangay III",
-    "Barangay IV",
-    "Barangay V",
-    "Barangay VI",
-    "Barangay VII",
 ]
 
 const PresForm = ({ id, onRemove }) => {
@@ -135,7 +135,7 @@ const PresForm = ({ id, onRemove }) => {
                         disabled
                     />
                     <Input
-                        label={"Contuct Number"}
+                        label={"Contact Number"}
                         type={"number"}
                         name="contact_number"
                         value={pres.contact_number}
@@ -160,15 +160,10 @@ const PresForm = ({ id, onRemove }) => {
             )}
             {!disabled && (
                 <div className="px-2 mt-1 flex items-stretch space-x-3">
-                    <button className="bg-red-400 py-3 px-2 w-full rounded-md hover:bg-red-500"
-                        onClick={__delete__}
-                    >
-                        delete
-                    </button>
                     <button className="bg-green-400 py-3 px-2 w-full rounded-md hover:bg-green-500"
                         onClick={__update__}
                     >
-                        save
+                        Update
                     </button>
                 </div>
             )}
@@ -246,7 +241,7 @@ const BarangayPresidents = () => {
     return (
         <div className="container mx-3 flex justify-center">
             <div className="flex flex-col bg-blue-100 p-3 rounded-lg my-4 shadow">
-                <h1 className="my-3 text-3xl font-extrabold">Barangay Presidents</h1>
+                <h1 className="my-3 text-3xl font-extrabold">Barangay Presidents'</h1>
                 <div className={`
                     mt-3 p-3 border border-gray-400
                     ${(barangaysSelections.length === 0 || !user.is_admin) ? "opacity-50 pointer-events-none" : ""}

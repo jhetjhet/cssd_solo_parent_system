@@ -20,6 +20,8 @@ ChartJS.register(
     Legend
 );
 
+const ALL_MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
 const data = {
     labels: ['Red', 'Blue'],
     datasets: [
@@ -213,13 +215,12 @@ const Dashboard = () => {
                     <div className="w-full flex justify-center col-span-2">
                         <div className="max-w-2xl bg-blue-500 p-4 rounded-lg shadow flex items-center justify-center">
                             <div className="max-w-sm bg-gray-100 p-4 rounded-lg shadow">
-                                <h1 className="text-xl underline mb-2">Total Solo Parents per Brg. this Month</h1>
+                                <h1 className="text-xl underline mb-2">{`Total Solo Parents per Barangay this month of ${ALL_MONTHS[new Date().getMonth()]}`}</h1>
                                 <Bar
                                     data={{
                                         labels: perBrngData.labels,
                                         datasets: [
                                             {
-                                                label: 'Value',
                                                 data: perBrngData.values,
                                                 backgroundColor: [
                                                     'rgba(255, 99, 132, 0.2)',
@@ -240,6 +241,14 @@ const Dashboard = () => {
                                                 borderWidth: 1,
                                             },
                                         ],
+                                        
+                                    }}
+                                    options={{
+                                        plugins: {
+                                            legend:{ 
+                                                display: false,
+                                            }
+                                        }
                                     }}
                                 />
                             </div>
