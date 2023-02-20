@@ -152,7 +152,7 @@ const AnnouncementForm = () => {
                             />
                         </div>
                         <button
-                            className="w-full bg-green-400 p-2 rounded-md"
+                            className="w-full bg-green-400 p-2 rounded-md capitalize"
                             type="submit"
                         >
                             create announcement
@@ -161,7 +161,7 @@ const AnnouncementForm = () => {
                 </form>
                 <div className="mt-4">
                     <div className="text-center">
-                        <h1 className="my-3 text-xl font-semibold">Scheduled announcements:</h1>
+                        <h1 className="my-3 text-xl font-semibold">Scheduled Announcements:</h1>
                     </div>
                     <div className="flex flex-col space-y-3">
                         {schedules.map((sched) => (

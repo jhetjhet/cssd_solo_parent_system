@@ -13,6 +13,7 @@ import { useAthenticationContext } from "../components/Authentication";
 
 
 const PERSONAL_INFO = {
+    "suffix": "",
     "first_name": "",
     "mid_name": "",
     "last_name": "",
@@ -24,7 +25,7 @@ const PERSONAL_INFO = {
     "barangay": "Bagong Kalsada",
     "age": "",
     "contact_number": "",
-    "gender": "Male",
+    "gender": "Female",
     "highest_educ_attain": "",
     "occup_emp": "",
     "occup_address": "",
@@ -69,9 +70,7 @@ const HEALTH_CARD = {
 }
 
 const TENURIAL_STATUS = {
-    "owned": false,
-    "sharer": false,
-    "priv_prop": false,
+    "tenurial_status": "Owned",
     "rent": false,
     "gov_prop": false,
     "riv_side": false,
@@ -99,12 +98,20 @@ export async function loader({ params }) {
     return { formData }
 }
 
+const get_age_by_date = (bday) => {
+    let ageDif = Date.now() - new Date(bday);
+    let ageDate = new Date(ageDif);
+    return Math.abs(ageDate.getUTCFullYear() - 1970);
+}
+
 const FamilyCompositionForm = ({ id, data, remove, onChange, errors = {} }) => {
 
     const __on_change__ = (e) => {
         const { name, value } = e.target;
 
         const newData = { ...data };
+        if (name === "birth_date")
+            newData.age = get_age_by_date(value);
         newData[name] = value;
 
         onChange(id, newData);
@@ -256,7 +263,7 @@ const FamilyCompositionForms = ({ famComps = [], setFamComps, famCompsErrors }) 
                     <button className="w-16 h-8 rounded-md bg-red-400 hover:bg-red-300 focus:outline focus:outline-red-500"
                         onClick={__clear__}
                     >
-                        clear
+                        Clear
                     </button>
                     <button className="w-16 h-8 rounded-md bg-green-400 hover:bg-green-300 focus:outline focus:outline-green-500"
                         onClick={__add__}
@@ -316,10 +323,16 @@ const AppFormSP = () => {
 
     }, [urlParams]);
 
+
     const __on_personal_info_change__ = (e) => {
         const { name, value } = e.target;
-
+        
         const newPersonalInfo = { ...personalInfo };
+
+        if (name === "birth_date") {
+            newPersonalInfo.age = get_age_by_date(value);
+        }
+
         newPersonalInfo[name] = value;
         setPersonalInfo(newPersonalInfo);
     }
@@ -376,8 +389,8 @@ const AppFormSP = () => {
 
     const __on_save__ = () => {
 
-        let personalInfoData = {...personalInfo};
-        if(personalInfoData.civil_status === "Others")
+        let personalInfoData = { ...personalInfo };
+        if (personalInfoData.civil_status === "Others")
             personalInfoData.civil_status = personalInfoData.civil_status_others;
 
         const DATA = {
@@ -396,22 +409,23 @@ const AppFormSP = () => {
             action = axios.post('http://localhost:8000/api/parents/', DATA);
 
         action.then((resp) => {
-            
-            if(!parentID){
-                setPersonalInfo({...PERSONAL_INFO});
+
+            if (!parentID) {
+                setPersonalInfo({ ...PERSONAL_INFO });
                 setFamComps([
                     { id: uuidv4(), ...FAMILY_COMP_DATA },
                 ]);
-                setProgSrvcAvailed({...PROGRAM_SERVICE_AVAILED});
-                setHealthCard({...HEALTH_CARD});
-                setTenurialStatus({...TENURIAL_STATUS});
-            }else
-                __load_formdata__({...resp.data});
+                setProgSrvcAvailed({ ...PROGRAM_SERVICE_AVAILED });
+                setHealthCard({ ...HEALTH_CARD });
+                setTenurialStatus({ ...TENURIAL_STATUS });
+            } else
+                __load_formdata__({ ...resp.data });
 
             window.alert("Save successfully.");
         }).catch((err) => {
             if (err.response) {
                 let errResp = err.response.data;
+                console.log(errResp)
                 console.log(errResp.family_composition);
                 if (errResp.family_composition) {
                     setFamCompsErrors([...errResp.family_composition]);
@@ -488,6 +502,25 @@ const AppFormSP = () => {
                         onChange={__on_personal_info_change__}
                         error={personalInfoErrors.last_name && personalInfoErrors.last_name[0]}
                     />
+                    <div className="">
+                        <Options
+                            label={"Suffix"}//Jr. , Sr. , I , II , III, IV , V
+                            options={[
+                                { value: "", label: "None" },
+                                { value: "I" },
+                                { value: "II" },
+                                { value: "III" },
+                                { value: "IV" },
+                                { value: "V" },
+                                { value: "Jr." },
+                                { value: "Sr." },
+                            ]}
+                            value={personalInfo.suffix}
+                            name={"suffix"}
+                            onChange={__on_personal_info_change__}
+                            error={personalInfoErrors.suffix && personalInfoErrors.suffix[0]}
+                        />
+                    </div>
                 </div>
                 <div className="flex justify-evenly">
                     <Input
@@ -518,8 +551,8 @@ const AppFormSP = () => {
                         <Options
                             label={"Gender"}
                             options={[
-                                { value: "M", label: "Male" },
-                                { value: "F", label: "Female" },
+                                { value: "Female" },
+                                { value: "Male" },
                             ]}
                             value={personalInfo.gender}
                             name={"gender"}
@@ -535,6 +568,13 @@ const AppFormSP = () => {
                             { value: "Banlic" },
                             { value: "Bañadero" },
                             { value: "Barandal" },
+                            { value: "Barangay I" },
+                            { value: "Barangay II" },
+                            { value: "Barangay III" },
+                            { value: "Barangay IV" },
+                            { value: "Barangay V" },
+                            { value: "Barangay VI" },
+                            { value: "Barangay VII" },
                             { value: "Batino" },
                             { value: "Bubuyan" },
                             { value: "Bucal" },
@@ -578,13 +618,6 @@ const AppFormSP = () => {
                             { value: "Turbina" },
                             { value: "Ulango" },
                             { value: "Uwisan" },
-                            { value: "Barangay I" },
-                            { value: "Barangay II" },
-                            { value: "Barangay III" },
-                            { value: "Barangay IV" },
-                            { value: "Barangay V" },
-                            { value: "Barangay VI" },
-                            { value: "Barangay VII" },
                         ]}
                         value={personalInfo.barangay}
                         name={"barangay"}
@@ -594,11 +627,11 @@ const AppFormSP = () => {
                         <Options
                             label={"Civil Status"}
                             options={[
-                                { value: "Unwed" },
-                                { value: "Separated" },
-                                { value: "Widow" },
                                 { value: "Annulled" },
                                 { value: "Guardian" },
+                                { value: "Separated" },
+                                { value: "Unwed" },
+                                { value: "Widow/Widower" },
                                 { value: "Others" },
                             ]}
                             value={personalInfo.civil_status}
@@ -620,21 +653,21 @@ const AppFormSP = () => {
 
                 <div>
                     <Input
-                        label={"Contact #."}
+                        label={"Contact Number"}
                         value={personalInfo.contact_number}
                         name={"contact_number"}
                         onChange={__on_personal_info_change__}
                         error={personalInfoErrors.contact_number && personalInfoErrors.contact_number[0]}
                     />
                     <Input
-                        label={"Highest Education Attainment"}
+                        label={"Highest Educational Attainment"}
                         value={personalInfo.highest_educ_attain}
                         name={"highest_educ_attain"}
                         onChange={__on_personal_info_change__}
                         error={personalInfoErrors.highest_educ_attain && personalInfoErrors.highest_educ_attain[0]}
                     />
                     <TextArea
-                        label={"Home Address"}
+                        label={"Complete Home Address"}
                         value={personalInfo.complete_present_address}
                         name={"complete_present_address"}
                         onChange={__on_personal_info_change__}
@@ -669,8 +702,8 @@ const AppFormSP = () => {
                             <Options
                                 label={"Status of Employment"}
                                 options={[
-                                    { value: "Regular", label: "Regular" },
                                     { value: "Contractual", label: "Contractual" },
+                                    { value: "Regular", label: "Regular" },
                                     { value: "Self-Employed", label: "Self-Employed" },
                                 ]}
                                 value={personalInfo.status_of_emp}
@@ -827,7 +860,7 @@ const AppFormSP = () => {
                                 onChange={__on_health_card_change__}
                             />
                             <CheckBox
-                                label={"Individual Player"}
+                                label={"Individual Payer"}
                                 checked={healthCard.indiv_player}
                                 name={"indiv_player"}
                                 onChange={__on_health_card_change__}
@@ -847,28 +880,16 @@ const AppFormSP = () => {
                 <div>
                     <h1 className="text-2xl font-semibold">VI. Tenurial Status</h1>
                     <div className="flex">
-                        <div className="flex-1">
-                            <CheckBox
-                                label={"Owned"}
-                                checked={tenurialStatus.owned}
-                                name={"owned"}
-                                onChange={__on_tenurial_status_change__}
-                            />
-                            <CheckBox
-                                label={"Sharer"}
-                                checked={tenurialStatus.sharer}
-                                name={"sharer"}
-                                onChange={__on_tenurial_status_change__}
-                            />
-                        </div>
-                        <div className="flex-1">
-                            <CheckBox
-                                label={"Private Property"}
-                                checked={tenurialStatus.priv_prop}
-                                name={"priv_prop"}
-                                onChange={__on_tenurial_status_change__}
-                            />
-                        </div>
+                        <Options
+                            options={[
+                                { value: "Owned" },
+                                { value: "Sharer" },
+                                { value: "Private Property" },
+                            ]}
+                            value={tenurialStatus.tenurial_status}
+                            name={"tenurial_status"}
+                            onChange={__on_tenurial_status_change__}
+                        />
                     </div>
                     <div className="flex flex-col">
                         <div className="flex space-x-6 items-center">
