@@ -71,11 +71,8 @@ const HEALTH_CARD = {
 
 const TENURIAL_STATUS = {
     "tenurial_status": "Owned",
-    "rent": false,
-    "gov_prop": false,
-    "riv_side": false,
-    "pnr_site": false,
-    "rent_per_month": ""
+    "danger_zone": "",
+    "rent_per_month": "",
 }
 
 export async function loader({ params }) {
@@ -315,7 +312,6 @@ const AppFormSP = () => {
     } = useAthenticationContext();
 
     useEffect(() => {
-
         if (formData) {
             setParentID(formData.id);
             __load_formdata__({ ...formData });
@@ -326,7 +322,7 @@ const AppFormSP = () => {
 
     const __on_personal_info_change__ = (e) => {
         const { name, value } = e.target;
-        
+
         const newPersonalInfo = { ...personalInfo };
 
         if (name === "birth_date") {
@@ -387,18 +383,51 @@ const AppFormSP = () => {
         setPersonalInfo({ ...data });
     }
 
-    const __on_save__ = () => {
+    const __reset_errors__ = () => {
+        setPersonalInfoErrors({});
+        setFamCompsErrors({});
+        setProgSrvcAvailedErrors({});
+        setHealthCardErrors({});
+        setTenurialStatusErrors({});
+    }
 
+    const __on_save__ = () => {
+        let hasError = false;
         let personalInfoData = { ...personalInfo };
         if (personalInfoData.civil_status === "Others")
             personalInfoData.civil_status = personalInfoData.civil_status_others;
 
+        let tenurialStatusData = { ...tenurialStatus };
+
+        if(tenurialStatus.tenurial_status === "Goverment Propery"){
+            tenurialStatus.rent_per_month = "";
+            if(!tenurialStatus.danger_zone){
+                setTenurialStatusErrors({
+                    ...tenurialStatusErrors,
+                    danger_zone: ["This field is required."]
+                })
+                hasError = true;
+            }
+        }
+        if(tenurialStatus.tenurial_status === "Rent"){
+            tenurialStatus.danger_zone = "";
+            if(!tenurialStatus.rent_per_month){
+                setTenurialStatusErrors({
+                    ...tenurialStatusErrors,
+                    rent_per_month: ["This field is required."]
+                })
+                hasError = true;
+            }
+
+        }
+
+        if(hasError) return;
         const DATA = {
             ...personalInfoData,
             family_composition: [...famComps],
             progs_srvcs_availed: { ...progSrvcAvailed },
             health_cards: { ...healthCard },
-            tenurial_status: { ...tenurialStatus },
+            tenurial_status: tenurialStatusData,
         }
 
         let action;
@@ -421,12 +450,12 @@ const AppFormSP = () => {
             } else
                 __load_formdata__({ ...resp.data });
 
+            __reset_errors__();
+
             window.alert("Save successfully.");
         }).catch((err) => {
             if (err.response) {
                 let errResp = err.response.data;
-                console.log(errResp)
-                console.log(errResp.family_composition);
                 if (errResp.family_composition) {
                     setFamCompsErrors([...errResp.family_composition]);
                     delete errResp.family_composition;
@@ -879,62 +908,44 @@ const AppFormSP = () => {
 
                 <div>
                     <h1 className="text-2xl font-semibold">VI. Tenurial Status</h1>
-                    <div className="flex">
+                    <div className="flex items-center space-x-3">
                         <Options
                             options={[
+                                { value: "Goverment Propery" },
                                 { value: "Owned" },
-                                { value: "Sharer" },
                                 { value: "Private Property" },
+                                { value: "Rent" },
+                                { value: "Sharer" },
                             ]}
                             value={tenurialStatus.tenurial_status}
                             name={"tenurial_status"}
                             onChange={__on_tenurial_status_change__}
                         />
-                    </div>
-                    <div className="flex flex-col">
-                        <div className="flex space-x-6 items-center">
-                            <CheckBox
-                                label={"Rent"}
-                                checked={tenurialStatus.rent}
-                                name={"rent"}
-                                onChange={__on_tenurial_status_change__}
-                            />
-                            <Input
-                                label={"Rent per Month"}
-                                type={"number"}
-                                value={tenurialStatus.rent_per_month}
-                                name={"rent_per_month"}
-                                onChange={__on_tenurial_status_change__}
-                                disabled={!tenurialStatus.rent}
-                            />
-                        </div>
-                        <div className="flex-1">
+                        {tenurialStatus.tenurial_status === "Rent" && (
                             <div className="flex space-x-6 items-center">
-                                <CheckBox
-                                    label={"Goverment Property"}
-                                    checked={tenurialStatus.gov_prop}
-                                    name={"gov_prop"}
+                                <Input
+                                    label={"Rent per Month"}
+                                    type={"number"}
+                                    value={tenurialStatus.rent_per_month || ""}
+                                    name={"rent_per_month"}
                                     onChange={__on_tenurial_status_change__}
+                                    error={tenurialStatusErrors.rent_per_month && tenurialStatusErrors.rent_per_month[0]}
                                 />
-                                <div className={`${tenurialStatus.gov_prop ? "" : "opacity-50 pointer-events-none"}`}>
-                                    <label className="block mb-1 text-lg font-bold text-gray-700">Danger Zone:</label>
-                                    <div className="flex items-center justify-center space-x-5">
-                                        <CheckBox
-                                            label={"Riverside"}
-                                            checked={tenurialStatus.riv_side}
-                                            name={"riv_side"}
-                                            onChange={__on_tenurial_status_change__}
-                                        />
-                                        <CheckBox
-                                            label={"PNR Site"}
-                                            checked={tenurialStatus.pnr_site}
-                                            name={"pnr_site"}
-                                            onChange={__on_tenurial_status_change__}
-                                        />
-                                    </div>
-                                </div>
                             </div>
-                        </div>
+                        )}
+                        {tenurialStatus.tenurial_status === "Goverment Propery" && (
+                            <Options 
+                                label={"Danger Zone:"}
+                                options={[
+                                    { value: "PNR Site" },
+                                    { value: "Riverside" },
+                                ]}
+                                value={tenurialStatus.danger_zone}
+                                name={"danger_zone"}
+                                onChange={__on_tenurial_status_change__}
+                                error={tenurialStatusErrors.danger_zone && tenurialStatusErrors.danger_zone[0]}
+                            />
+                        )}
                     </div>
                 </div>
                 <div className="h-32 w-full mt-3 border-t border-blue-500 flex items-center justify-center px-12">
