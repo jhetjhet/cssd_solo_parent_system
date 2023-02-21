@@ -39,6 +39,7 @@ const PERSONAL_INFO = {
 }
 
 const FAMILY_COMP_DATA = {
+    "suffix": "",
     "first_name": "",
     "mid_name": "",
     "last_name": "",
@@ -147,6 +148,24 @@ const FamilyCompositionForm = ({ id, data, remove, onChange, errors = {} }) => {
                     onChange={__on_change__}
                     error={errors.last_name && errors.last_name[0]}
                 />
+                <div className="w-28">
+                    <Options
+                        label={"Suffix"}//Jr. , Sr. , I , II , III, IV , V
+                        options={[
+                            { value: "", label: "None" },
+                            { value: "I" },
+                            { value: "II" },
+                            { value: "III" },
+                            { value: "IV" },
+                            { value: "V" },
+                            { value: "Jr." },
+                            { value: "Sr." },
+                        ]}
+                    value={data.suffix}
+                    name={"suffix"}
+                    onChange={__on_change__}
+                    />
+                </div>
             </div>
             <div className="flex">
                 <Input
@@ -399,9 +418,9 @@ const AppFormSP = () => {
 
         let tenurialStatusData = { ...tenurialStatus };
 
-        if(tenurialStatus.tenurial_status === "Goverment Propery"){
+        if (tenurialStatus.tenurial_status === "Goverment Property") {
             tenurialStatus.rent_per_month = "";
-            if(!tenurialStatus.danger_zone){
+            if (!tenurialStatus.danger_zone) {
                 setTenurialStatusErrors({
                     ...tenurialStatusErrors,
                     danger_zone: ["This field is required."]
@@ -409,9 +428,9 @@ const AppFormSP = () => {
                 hasError = true;
             }
         }
-        if(tenurialStatus.tenurial_status === "Rent"){
+        if (tenurialStatus.tenurial_status === "Rent") {
             tenurialStatus.danger_zone = "";
-            if(!tenurialStatus.rent_per_month){
+            if (!tenurialStatus.rent_per_month) {
                 setTenurialStatusErrors({
                     ...tenurialStatusErrors,
                     rent_per_month: ["This field is required."]
@@ -421,7 +440,7 @@ const AppFormSP = () => {
 
         }
 
-        if(hasError) return;
+        if (hasError) return;
         const DATA = {
             ...personalInfoData,
             family_composition: [...famComps],
@@ -911,7 +930,7 @@ const AppFormSP = () => {
                     <div className="flex items-center space-x-3">
                         <Options
                             options={[
-                                { value: "Goverment Propery" },
+                                { value: "Goverment Property" },
                                 { value: "Owned" },
                                 { value: "Private Property" },
                                 { value: "Rent" },
@@ -933,8 +952,8 @@ const AppFormSP = () => {
                                 />
                             </div>
                         )}
-                        {tenurialStatus.tenurial_status === "Goverment Propery" && (
-                            <Options 
+                        {tenurialStatus.tenurial_status === "Goverment Property" && (
+                            <Options
                                 label={"Danger Zone:"}
                                 options={[
                                     { value: "PNR Site" },
