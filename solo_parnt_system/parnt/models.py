@@ -112,6 +112,7 @@ class FamilyComposition (models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     _parent = models.ForeignKey('Parent', on_delete=models.CASCADE, related_name='family_composition')
 
+    suffix = models.CharField(max_length=64, blank=True, null=True)
     first_name = models.CharField(max_length=128)
     mid_name = models.CharField(max_length=128)
     last_name = models.CharField(max_length=128)
