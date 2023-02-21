@@ -81,6 +81,8 @@ const ReportsTable = ({ cols, fields_row_name, datas, setDatas, printMode = fals
 
         let [name, id] = nameID.split(".");
 
+        setUserActive(checked, id);
+
         const newDatas = datas.map((data) => {
 
             if (data.id === id) {
