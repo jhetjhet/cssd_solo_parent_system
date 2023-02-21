@@ -1,6 +1,4 @@
 import React from 'react';
-import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, Title } from 'chart.js';
-import { Bar, Pie } from 'react-chartjs-2';
 import axios from 'axios';
 import { useEffect } from 'react';
 import { useState } from 'react';
@@ -8,102 +6,58 @@ import ReactToPrint from 'react-to-print';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPrint } from '@fortawesome/free-solid-svg-icons';
 import { useRef } from 'react';
-
-ChartJS.register(ArcElement, Tooltip, Legend);
-
-ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    BarElement,
-    Title,
+import {
+    BarChart,
+    Bar,
+    XAxis,
+    YAxis,
+    CartesianGrid,
     Tooltip,
-    Legend
-);
+    Legend,
+    Cell,
+    PieChart,
+    Pie
+} from "recharts";
+
+const BAR_COLORS = [
+    "#715ed1",
+    "#6460ea",
+    "#0e62a3",
+    "#59c7ff",
+    "#3419d1",
+    "#1b7484",
+    "#1652f7",
+    "#3091a0",
+    "#5431e0",
+    "#477cb2",
+    "#014db7",
+    "#2d5ea8",
+    "#2ef4ee",
+    "#5d72d3",
+]
 
 const ALL_MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
-const data = {
-    labels: ['Red', 'Blue'],
-    datasets: [
-        {
-            label: 'Value',
-            data: [12, 19],
-            backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(54, 162, 235, 0.2)',
-                'rgba(255, 206, 86, 0.2)',
-                'rgba(75, 192, 192, 0.2)',
-                'rgba(153, 102, 255, 0.2)',
-                'rgba(255, 159, 64, 0.2)',
-            ],
-            borderColor: [
-                'rgba(255, 99, 132, 1)',
-                'rgba(54, 162, 235, 1)',
-                'rgba(255, 206, 86, 1)',
-                'rgba(75, 192, 192, 1)',
-                'rgba(153, 102, 255, 1)',
-                'rgba(255, 159, 64, 1)',
-            ],
-            borderWidth: 1,
-        },
-    ],
-};
+const RADIAN = Math.PI / 180;
+const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, name, value }) => {
+    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
 
-const data2 = {
-    labels: ['Male', 'Female'],
-    datasets: [
-        {
-            label: 'Value',
-            data: [12, 19],
-            backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(54, 162, 235, 0.2)',
-            ],
-            borderColor: [
-                'rgba(255, 99, 132, 1)',
-                'rgba(54, 162, 235, 1)',
-            ],
-            borderWidth: 1,
-        },
-    ],
-};
-const data3 = {
-    labels: ['Active', 'Inactive'],
-    datasets: [
-        {
-            label: 'Value',
-            data: [0, 1],
-            backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(54, 162, 235, 0.2)',
-            ],
-            borderColor: [
-                'rgba(255, 99, 132, 1)',
-                'rgba(54, 162, 235, 1)',
-            ],
-            borderWidth: 1,
-        },
-    ],
+    return (
+        <text x={x} y={y} fill="black" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
+            {`${name}=${value}|${(percent * 100).toFixed(0)}%`}
+        </text>
+    );
 };
 
 const Dashboard = () => {
 
     const chartsToPrintRef = useRef();
 
-    const [actIncVal, setActIncVal] = useState({
-        labels: [],
-        values: [],
-        colors: [],
-    });
-    const [byGenderVal, setByGenderVal] = useState({
-        labels: [],
-        values: [],
-        colors: [],
-    });
-    const [perBrngData, setPerBrngData] = useState({
-        labels: [],
-        values: [],
-    });
+    const [actIncVal, setActIncVal] = useState([]);
+    const [byGenderVal, setByGenderVal] = useState([]);
+    const [perBrngData, setPerBrngData] = useState([]);
 
     useEffect(() => {
         __load_dashboard__();
@@ -117,37 +71,33 @@ const Dashboard = () => {
                 tot_solo_parent_per_brng,
             } = resp.data;
 
-            let newActIncVal = { ...actIncVal };
-
-            num_act_inact_solo_parent.forEach((data) => {
-                newActIncVal.labels.push(data.active ? `Active=${data.column}` : `Inactive=${data.column}`);
-                newActIncVal.colors.push(data.active ? 'rgb(0,255,0, 0.7)' : 'rgb(255,0,0, 0.7)');
-                newActIncVal.values.push(data.column);
-            });
+            let newActIncVal = num_act_inact_solo_parent.map((data) => ({
+                name: data.active ? `Active` : `Inactive`,
+                value: data.column,
+                color: data.active ? 'rgb(0,255,0, 0.7)' : 'rgb(255,0,0, 0.7)',
+            }));
 
             setActIncVal(newActIncVal);
-// rgb(255,105,180), rgb(0,0,255)
-            let newBenderVal = { ...byGenderVal };
-            num_solo_parent_by_gender.forEach((data) => {
-                newBenderVal.labels.push(`${data.gender}=${data.column}`);
-                newBenderVal.colors.push(data.gender === "Male" ? 'rgb(0,0,255)' : 'rgb(255,105,180)');
-                newBenderVal.values.push(data.column);
-            });
+            // rgb(255,105,180), rgb(0,0,255)
+            let newBenderVal = num_solo_parent_by_gender.map((data) => ({
+                name: data.gender,
+                value: data.column,
+                color: data.gender === "Male" ? 'rgb(0,0,255)' : 'rgb(255,105,180)',
+            }));
 
             setByGenderVal(newBenderVal);
 
-            let newPerBrngData = { ...perBrngData };
-            tot_solo_parent_per_brng.forEach((data) => {
-                newPerBrngData.labels.push(`${data.barangay}=${data.column}`);
-                newPerBrngData.values.push(data.column);
-            });
+            let newPerBrngData = tot_solo_parent_per_brng.map((data) => ({
+                name: data.barangay,
+                value: data.column,
+            }));
             setPerBrngData(newPerBrngData);
 
         }).catch((err) => { });
     }
 
     return (
-        <div className="container mx-3 flex justify-center" ref={chartsToPrintRef}>
+        <div className="container mx-3 flex justify-center">
             <div className="flex flex-col bg-blue-100 p-3 rounded-lg my-4 shadow min-w-[60%] relative">
                 <h1 className="my-3 text-3xl font-extrabold">Dashboard</h1>
                 <div className="absolute top-2 right-4">
@@ -164,92 +114,90 @@ const Dashboard = () => {
                         content={() => chartsToPrintRef.current}
                     />
                 </div>
-                <div className="mt-4 grid grid-cols-2 gap-x-3 gap-y-6 w-full">
-                    <div className="max-w-sm bg-blue-500 p-4 rounded-lg shadow  flex items-center justify-center">
-                        <div className="max-w-sm bg-gray-100 p-4 rounded-lg shadow">
-                            <h1 className="text-xl underline mb-2">Solo Parents Count by Membership Status</h1>
-                            <Pie
-                                data={{
-                                    labels: actIncVal.labels,
-                                    datasets: [
-                                        {
-                                            label: 'Value',
-                                            data: actIncVal.values,
-                                            backgroundColor: [
-                                                ...actIncVal.colors
-                                            ],
-                                            borderColor: [
-                                                ...actIncVal.colors,
-                                            ],
-                                            borderWidth: 1,
-                                        },
-                                    ],
-                                }}
-                            />
+                <div className='w-full' ref={chartsToPrintRef}>
+                    <div className="mt-4 grid grid-cols-2 gap-x-3 gap-y-6 w-full">
+                        <div className="bg-blue-500 p-4 rounded-lg shadow  flex items-center justify-center">
+                            <div className="bg-gray-100 p-4 rounded-lg shadow">
+                                <h1 className="text-xl underline mb-2">Solo Parents Count by Membership Status</h1>
+                                <PieChart width={400} height={400}>
+                                    <Pie
+                                        data={actIncVal}
+                                        cx="50%"
+                                        cy="50%"
+                                        labelLine={false}
+                                        label={renderCustomizedLabel}
+                                        outerRadius={164}
+                                        fill="#8884d8"
+                                        dataKey="value"
+                                    >
+                                        <Legend />
+                                        {actIncVal.map((entry, index) => (
+                                            <Cell key={`cell-${index}`} fill={entry.color || 'green'} />
+                                        ))}
+                                    </Pie>
+                                </PieChart>
+                            </div>
                         </div>
-                    </div>
-                    <div className="max-w-sm bg-blue-500 p-4 rounded-lg shadow  flex items-center justify-center">
-                        <div className="max-w-sm bg-gray-100 p-4 rounded-lg shadow">
-                            <h1 className="text-xl underline mb-2">Number of Solo Parent by Gender</h1>
-                            <Pie
-                                data={{
-                                    labels: byGenderVal.labels,
-                                    datasets: [
-                                        {
-                                            label: 'Value',
-                                            data: byGenderVal.values,
-                                            backgroundColor: [
-                                                ...byGenderVal.colors,
-                                            ],
-                                            borderColor: [
-                                                ...byGenderVal.colors,
-                                            ],
-                                            borderWidth: 1,
-                                        },
-                                    ],
-                                }}
-                            />
+                        <div className="bg-blue-500 p-4 rounded-lg shadow  flex items-center justify-center">
+                            <div className="bg-gray-100 p-4 rounded-lg shadow">
+                                <h1 className="text-xl underline mb-2">Number of Solo Parent by Gender</h1>
+                                <PieChart width={400} height={400}>
+                                    <Pie
+                                        data={byGenderVal}
+                                        cx="50%"
+                                        cy="50%"
+                                        labelLine={false}
+                                        label={renderCustomizedLabel}
+                                        outerRadius={164}
+                                        fill="#8884d8"
+                                        dataKey="value"
+                                    >
+                                        <Legend />
+                                        {byGenderVal.map((entry, index) => (
+                                            <Cell key={`cell-${index}`} fill={entry.color || 'green'} />
+                                        ))}
+                                    </Pie>
+                                </PieChart>
+                            </div>
                         </div>
-                    </div>
-                    <div className="w-full flex justify-center col-span-2">
-                        <div className="max-w-2xl bg-blue-500 p-4 rounded-lg shadow flex items-center justify-center">
-                            <div className="max-w-sm bg-gray-100 p-4 rounded-lg shadow">
-                                <h1 className="text-xl underline mb-2">{`Total Solo Parents per Barangay this month of ${ALL_MONTHS[new Date().getMonth()]}`}</h1>
-                                <Bar
-                                    data={{
-                                        labels: perBrngData.labels,
-                                        datasets: [
-                                            {
-                                                data: perBrngData.values,
-                                                backgroundColor: [
-                                                    'rgba(255, 99, 132, 0.2)',
-                                                    'rgba(54, 162, 235, 0.2)',
-                                                    'rgba(255, 206, 86, 0.2)',
-                                                    'rgba(75, 192, 192, 0.2)',
-                                                    'rgba(153, 102, 255, 0.2)',
-                                                    'rgba(255, 159, 64, 0.2)',
-                                                ],
-                                                borderColor: [
-                                                    'rgba(255, 99, 132, 1)',
-                                                    'rgba(54, 162, 235, 1)',
-                                                    'rgba(255, 206, 86, 1)',
-                                                    'rgba(75, 192, 192, 1)',
-                                                    'rgba(153, 102, 255, 1)',
-                                                    'rgba(255, 159, 64, 1)',
-                                                ],
-                                                borderWidth: 1,
-                                            },
-                                        ],
-                                        
-                                    }}
-                                    options={{
-                                        plugins: {
-                                            legend:{ 
-                                                display: false,
-                                            }
-                                        }
-                                    }}
-                                />
+                        <div className="w-full flex justify-center col-span-2">
+                            <div className=" bg-blue-500 p-4 rounded-lg shadow flex items-center justify-center">
+                                <div className=" bg-gray-100 p-4 rounded-lg shadow">
+                                    <h1 className="text-xl underline mb-2">{`Total Solo Parents per Barangay this month of ${ALL_MONTHS[new Date().getMonth()]}`}</h1>
+                                    <BarChart
+                                        width={764}
+                                        height={300}
+                                        data={perBrngData}
+                                        margin={{
+                                            top: 5,
+                                            right: 30,
+                                            left: 20,
+                                            bottom: 5
+                                        }}
+
+                                    >
+                                        <CartesianGrid strokeDasharray="3 3" />
+                                        <XAxis dataKey="name" />
+                                        <YAxis />
+                                        <Tooltip />
+                                        {/* <Legend /> */}
+                                        <Bar
+                                            dataKey="value"
+                                            fill={`${BAR_COLORS[0]}`}
+                                            label={{
+                                                position: "center",
+                                                fill: '#000000',
+                                            }}
+                                        >
+                                            {perBrngData.map((d, di) => (
+                                                <Cell
+                                                    key={`cell-${di}`}
+                                                    fill={BAR_COLORS[di % BAR_COLORS.length]}
+                                                />
+                                            ))}
+                                        </Bar>
+                                    </BarChart>
+                                </div>
                             </div>
                         </div>
                     </div>
