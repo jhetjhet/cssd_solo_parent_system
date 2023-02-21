@@ -557,7 +557,7 @@ const AppFormSP = () => {
                         onChange={__on_personal_info_change__}
                         error={personalInfoErrors.last_name && personalInfoErrors.last_name[0]}
                     />
-                    <div className="">
+                    <div className="w-28">
                         <Options
                             label={"Suffix"}//Jr. , Sr. , I , II , III, IV , V
                             options={[
@@ -975,7 +975,7 @@ const AppFormSP = () => {
                     </div>
                 </div>
                 <div className="h-32 w-full mt-3 border-t border-blue-500 flex items-center justify-center px-12">
-                    <button className="h-16 w-full bg-green-400 rounded-full hover:bg-green-300 hover:shadow focus:outline focus:outline-green-500 mb-6"
+                    <button className="capitalize h-16 w-full bg-green-400 rounded-full hover:bg-green-300 hover:shadow focus:outline focus:outline-green-500 mb-6"
                         onClick={__on_save__}
                     >
                         {parentID ? "update" : "save"}

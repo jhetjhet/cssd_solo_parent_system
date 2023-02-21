@@ -280,7 +280,7 @@ const BarangayPresidents = () => {
                         className="w-full bg-green-400 p-2 rounded-md hover:bg-green-500"
                         onClick={__save__}
                     >
-                        save
+                        Save
                     </button>
                 </div>
                 <div className="mt-4">
