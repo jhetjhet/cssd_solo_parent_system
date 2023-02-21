@@ -93,10 +93,12 @@ const Dashboard = () => {
     const [actIncVal, setActIncVal] = useState({
         labels: [],
         values: [],
+        colors: [],
     });
     const [byGenderVal, setByGenderVal] = useState({
         labels: [],
         values: [],
+        colors: [],
     });
     const [perBrngData, setPerBrngData] = useState({
         labels: [],
@@ -115,19 +117,20 @@ const Dashboard = () => {
                 tot_solo_parent_per_brng,
             } = resp.data;
 
-            let actVal, incVal;
-
             let newActIncVal = { ...actIncVal };
+
             num_act_inact_solo_parent.forEach((data) => {
                 newActIncVal.labels.push(data.active ? `Active=${data.column}` : `Inactive=${data.column}`);
+                newActIncVal.colors.push(data.active ? 'rgb(0,255,0, 0.7)' : 'rgb(255,0,0, 0.7)');
                 newActIncVal.values.push(data.column);
             });
 
             setActIncVal(newActIncVal);
-
+// rgb(255,105,180), rgb(0,0,255)
             let newBenderVal = { ...byGenderVal };
             num_solo_parent_by_gender.forEach((data) => {
                 newBenderVal.labels.push(`${data.gender}=${data.column}`);
+                newBenderVal.colors.push(data.gender === "Male" ? 'rgb(0,0,255)' : 'rgb(255,105,180)');
                 newBenderVal.values.push(data.column);
             });
 
@@ -173,12 +176,10 @@ const Dashboard = () => {
                                             label: 'Value',
                                             data: actIncVal.values,
                                             backgroundColor: [
-                                                'rgba(255, 99, 132, 0.2)',
-                                                'rgba(54, 162, 235, 0.2)',
+                                                ...actIncVal.colors
                                             ],
                                             borderColor: [
-                                                'rgba(255, 99, 132, 1)',
-                                                'rgba(54, 162, 235, 1)',
+                                                ...actIncVal.colors,
                                             ],
                                             borderWidth: 1,
                                         },
@@ -198,12 +199,10 @@ const Dashboard = () => {
                                             label: 'Value',
                                             data: byGenderVal.values,
                                             backgroundColor: [
-                                                'rgba(255, 99, 132, 0.2)',
-                                                'rgba(54, 162, 235, 0.2)',
+                                                ...byGenderVal.colors,
                                             ],
                                             borderColor: [
-                                                'rgba(255, 99, 132, 1)',
-                                                'rgba(54, 162, 235, 1)',
+                                                ...byGenderVal.colors,
                                             ],
                                             borderWidth: 1,
                                         },
