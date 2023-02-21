@@ -493,8 +493,15 @@ const AppFormSP = () => {
                 }
                 if (errResp)
                     setPersonalInfoErrors({ ...errResp });
+                
             }
-            window.alert("Error occur while saving data...");
+
+            let errMessage = "Error occur while saving data...";
+
+            if(err.response && err.response.data.non_field_errors)
+                errMessage = err.response.data.non_field_errors[0];
+
+            window.alert(errMessage);
         });
     }
 
