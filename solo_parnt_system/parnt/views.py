@@ -49,9 +49,9 @@ class ParentViewset (viewsets.ModelViewSet):
         'first_name',
         'mid_name',
         'last_name',
-        'age',
+        '=age',
         '=gender',
-        'barangay',
+        '=civil_status',
     )
     filterset_fields = (
         'active',
