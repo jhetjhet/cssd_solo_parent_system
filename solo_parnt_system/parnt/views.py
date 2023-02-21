@@ -61,9 +61,9 @@ class ParentViewset (viewsets.ModelViewSet):
     @action(detail=True, methods=['POST'])
     def activate(self, request, pk=None):
         parent = self.get_object()
-
-        if parent.expiration_date != None and parent.expiration_date < timezone.localtime():
-            return Response(status=400)
+        # disallow activation when expiration_date is not set
+        # if parent.expiration_date != None and parent.expiration_date < timezone.localtime():
+        #     return Response(status=400)
 
         if(not parent.active):
             parent.reset_expiry()
