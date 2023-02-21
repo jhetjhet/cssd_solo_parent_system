@@ -10,6 +10,7 @@ from uuid import UUID
 from django.utils import timezone
 from datetime import datetime
 import re
+from rest_framework.validators import UniqueTogetherValidator
 
 def is_valid_uuid(str_id, version=4):
 
@@ -183,6 +184,19 @@ class ParentSerializer (serializers.ModelSerializer):
                 'validators': [contact_number_format_validator],
             }
         }
+        validators = [
+            UniqueTogetherValidator(
+                queryset=Parent.objects.all(),
+                fields=[
+                    "suffix",
+                    "first_name",
+                    "mid_name",
+                    "last_name",
+                    "age",
+                ],
+                message="Solo Parent's Information Already Exists?"
+            ),
+        ]
 
     def create(self, validated_data):
         family_composition_datas = validated_data.pop("family_composition")
