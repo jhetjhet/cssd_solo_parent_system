@@ -49,6 +49,7 @@ class ParentViewset (viewsets.ModelViewSet):
         'first_name',
         'mid_name',
         'last_name',
+        '=barangay',
         '=age',
         '=gender',
         '=civil_status',
@@ -93,8 +94,8 @@ class ParentViewset (viewsets.ModelViewSet):
     @action(detail=False, methods=['GET'])
     def dashboard(self, request, pk=None):
 
-        tot_solo_parent_per_brng = pivot(Parent.objects.filter(date_registered__month=date.today().month), 'barangay', 'column', 'first_name', aggregation=Count)
-        num_solo_parent_by_gender = pivot(Parent, 'gender', 'column', 'first_name', aggregation=Count)
+        tot_solo_parent_per_brng = pivot(Parent.objects.filter(active=True, date_registered__month=date.today().month), 'barangay', 'column', 'first_name', aggregation=Count)
+        num_solo_parent_by_gender = pivot(Parent.objects.filter(active=True), 'gender', 'column', 'first_name', aggregation=Count)
         num_act_inact_solo_parent = pivot(Parent, 'active', 'column', 'first_name', aggregation=Count)
 
         return Response(data={
