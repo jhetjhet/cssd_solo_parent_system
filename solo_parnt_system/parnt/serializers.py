@@ -194,7 +194,7 @@ class ParentSerializer (serializers.ModelSerializer):
                     "last_name",
                     "age",
                 ],
-                message="Solo Parent's Information Already Exists?"
+                message="Solo Parent's Information Already Exists."
             ),
         ]
 
