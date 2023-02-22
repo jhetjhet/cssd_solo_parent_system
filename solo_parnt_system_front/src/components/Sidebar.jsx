@@ -6,6 +6,7 @@ const Sidebar = () => {
 
     const {
         logout,
+        user,
     } = useAthenticationContext();
 
     const navigate = useNavigate();
@@ -32,9 +33,13 @@ const Sidebar = () => {
                 <span className="text-[15px] ml-4 text-gray-200 font-bold">Dashboard</span>
             </Link>
             <Link
-                className="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600 text-white"
+                className={`
+                    p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600 text-white
+                    ${ user.is_admin ? "" : "opacity-50 pointer-events-none" }
+                `}
                 to={"/form/"}
                 replace
+
             >
                 <i className="bi bi-bookmark-fill"></i>
                 <span className="text-[15px] ml-4 text-gray-200 font-bold">Application Form</span>
@@ -47,7 +52,10 @@ const Sidebar = () => {
                 <span className="text-[15px] ml-4 text-gray-200 font-bold">Records</span>
             </Link>
             <Link
-                className="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600 text-white"
+                className={`
+                    p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600 text-white
+                    ${ user.is_admin ? "" : "opacity-50 pointer-events-none" }
+                `}
                 to={"/announcements/"}
                 replace
             >
@@ -55,7 +63,10 @@ const Sidebar = () => {
                 <span className="text-[15px] ml-4 text-gray-200 font-bold">Announcements</span>
             </Link>
             <Link
-                className="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600 text-white"
+                className={`
+                    p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600 text-white
+                    ${ user.is_admin ? "" : "opacity-50 pointer-events-none" }
+                `}
                 to={"/presidents/"}
                 replace
             >
