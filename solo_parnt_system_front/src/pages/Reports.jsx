@@ -10,7 +10,8 @@ import { Form, Link, useLoaderData, useSearchParams } from "react-router-dom";
 import ReactToPrint from "react-to-print";
 import { useAthenticationContext } from "../components/Authentication";
 import { Input, Options, Switch } from "../components/FormInputs";
-
+import lungsod_logo from "../lungsod_logo.png";
+import cssd_logo from "../cssd_logo.png";
 
 export async function loader({ request }) {
 
@@ -60,12 +61,30 @@ const ReportsTablePrintable = React.forwardRef((props, ref) => {
 
     return (
         <div ref={ref} className="w-screen overflow-x-hidden">
-            <div className="my-3 ml-3">
-                <h1 className="text-xl font-semibold">Total = {props.datas.length}</h1>
+            <div className="my-3 ml-3 w-full flex items-center justify-center">
+                <div className="flex items-center justify-center">
+                    <div className="w-16">
+                        <img src={lungsod_logo} />
+                    </div>
+                    <div className="font-serif text-sm text-center mx-3">
+                        <p className="font-semibold">Republic of the Philippines</p>
+                        <p className="font-semibold">Province of laguna</p>
+                        <p className="font-semibold">City of Calamba</p>
+                        <p>Telephone No.(049) 545- 6789 loc. 8120, 8226 & 8022</p>
+                    </div>
+                    <div className="">
+                        <img className="h-10" src={cssd_logo} />
+                    </div>
+                </div>
             </div>
-            <ReportsTable
-                {...props}
-            />
+            <div className="relative mb-12">
+                <ReportsTable
+                    {...props}
+                />
+                <div className="my-3 ml-3 absolute -bottom-8 w-screen flex">
+                    <h1 className="ml-auto text-xl font-semibold mr-12">Total Number of Solo Parents in Calamba City: {props.datas.length}</h1>
+                </div>
+            </div>
         </div>
     );
 });
@@ -108,7 +127,7 @@ const ReportsTable = ({ cols, fields_row_name, datas, setDatas, printMode = fals
                             <thead className="">
                                 <tr>
                                     <th scope="col" className="border border-gray-500 text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                                        #
+                                        No.
                                     </th>
                                     {cols && cols.map((col, i) => (
                                         <th scope="col" className="border border-gray-500 text-sm font-medium text-gray-900 px-6 py-4 text-left"
@@ -126,7 +145,7 @@ const ReportsTable = ({ cols, fields_row_name, datas, setDatas, printMode = fals
                             </thead>
                             <tbody>
                                 {datas && datas.map((data, i) => (
-                                    <tr className="even:bg-blue-200"
+                                    <tr className=""
                                         key={data.id}
                                     >
                                         <td className="border border-gray-500 px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
@@ -252,7 +271,7 @@ const Reports = () => {
                         <ReportsTablePrintable
                             cols={[
                                 "Name",
-                                "Contact #",
+                                "Contact Number",
                                 "Gender",
                                 "Age",
                                 "Civil Status",
@@ -272,7 +291,7 @@ const Reports = () => {
                     <ReportsTable
                         cols={[
                             "Name",
-                            "Contact #",
+                            "Contact Number",
                             "Gender",
                             "Age",
                             "Civil Status",
