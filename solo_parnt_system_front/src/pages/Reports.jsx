@@ -66,7 +66,7 @@ const ReportsTablePrintable = React.forwardRef((props, ref) => {
                     <div className="w-16">
                         <img src={lungsod_logo} />
                     </div>
-                    <div className="font-serif text-sm text-center mx-3">
+                    <div className="font-serif text-sm text-center mx-3 capitalize">
                         <p className="font-semibold">Republic of the Philippines</p>
                         <p className="font-semibold">Province of laguna</p>
                         <p className="font-semibold">City of Calamba</p>
