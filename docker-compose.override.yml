@@ -1,0 +1,20 @@
+services:
+  backend:
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - ./solo_parnt_system:/app
+
+  frontend:
+    build: 
+      context: ./solo_parnt_system_front
+      target: development
+    stdin_open: true
+    tty: true
+    volumes:
+      # Mount source for live reload; preserve node_modules from the image build
+      - ./solo_parnt_system_front:/app
+      - /app/node_modules
+    environment:
+      - REACT_APP_API_URL=${REACT_APP_API_URL:-http://localhost:8005}
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"

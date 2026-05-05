@@ -31,7 +31,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-CSRF_TRUSTED_ORIGINS = ['http://localhost:8080']
+CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', 'http://localhost:8080,http://localhost:3000').split(',')
 
 # Application definition
 
@@ -94,16 +94,12 @@ WSGI_APPLICATION = 'solo_parnt_system.wsgi.application'
 
 DATABASES = {
     'default': {
-        # 'ENGINE': 'django.db.backends.sqlite3',
-        # 'NAME': BASE_DIR / 'db.sqlite3',
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'solo_parent_db',
-        'OPTIONS': {
-            'user': 'root',
-            'password': 'jhet.',
-            'host': '127.0.0.1',
-            'port': 3306,
-        },
+        'NAME': os.getenv('DB_NAME', 'solo_parent_db'),
+        'USER': os.getenv('DB_USER', 'root'),
+        'PASSWORD': os.getenv('DB_PASSWORD', 'foo_pass'),
+        'HOST': os.getenv('DB_HOST', '127.0.0.1'),
+        'PORT': os.getenv('DB_PORT', '3306'),
     }
 }
 
@@ -200,8 +196,8 @@ CORS_ALLOW_ALL_ORIGINS = True
 
 # Parent model expiration config
 # EXPIRY_LIFE must be greater than EXPIRY_DEL
-EXPIRY_LIFE = timezone.timedelta(minutes=3)
-EXPIRY_DEL = timezone.timedelta(minutes=1)
+EXPIRY_LIFE = timezone.timedelta(minutes=int(os.getenv('EXPIRY_LIFE', 3)))
+EXPIRY_DEL = timezone.timedelta(minutes=int(os.getenv('EXPIRY_DEL', 1)))
 
 # TWILIO CONF
 TWILIO_ACC_SID = os.getenv('TWILIO_ACC_SID')

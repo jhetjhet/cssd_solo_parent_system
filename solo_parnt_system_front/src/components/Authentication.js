@@ -1,4 +1,5 @@
 import axios from "axios";
+import { API_BASE_URL } from '../config';
 import { createContext, useContext, useEffect, useState } from "react";
 import { useCookies } from 'react-cookie';
 import { useLocation, useNavigate } from "react-router-dom";
@@ -15,7 +16,7 @@ export const AuthenticationProvider = ({ children }) => {
     });
 
     const logout = () => {
-        axios.post('http://localhost:8000/auth/token/logout/', {
+        axios.post(`${API_BASE_URL}/auth/token/logout/`, {
             headers: {
                 Authorization: `Token ${localStorage.getItem('auth_token')}`,
             }
@@ -62,7 +63,7 @@ export const RequireAuth = ({ children }) => {
     }, [location]);
 
     const __load_user__ = () => {
-        axios.get('http://localhost:8000/auth/users/me/', {
+        axios.get(`${API_BASE_URL}/auth/users/me/`, {
             headers: {
                 Authorization: `Token ${localStorage.getItem('auth_token')}`
             }

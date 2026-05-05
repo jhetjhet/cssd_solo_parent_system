@@ -5,6 +5,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
+import { API_BASE_URL } from '../config';
 import React, { useEffect, useRef, useState } from "react";
 import { Form, Link, useLoaderData, useSearchParams } from "react-router-dom";
 import ReactToPrint from "react-to-print";
@@ -24,7 +25,7 @@ export async function loader({ request }) {
     if (activeVal && activeVal !== 'all') params.active = activeVal;
 
 
-    let req = axios.get('http://localhost:8000/api/parents/', {
+    let req = axios.get(`${API_BASE_URL}/api/parents/`, {
         params,
     });
 
@@ -43,9 +44,9 @@ export async function loader({ request }) {
 async function setUserActive(activeStatus, id) {
 
     try {
-        const req = axios.post(`http://localhost:8000/api/parents/${id}/deactivate/`);
+        const req = axios.post(`${API_BASE_URL}/api/parents/${id}/deactivate/`);
         if (activeStatus)
-            req = axios.post(`http://localhost:8000/api/parents/${id}/activate/`);
+            req = axios.post(`${API_BASE_URL}/api/parents/${id}/activate/`);
 
         const resp = await req;
 

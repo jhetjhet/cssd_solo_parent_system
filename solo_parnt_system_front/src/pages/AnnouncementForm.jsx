@@ -1,4 +1,5 @@
 import axios from "axios";
+import { API_BASE_URL } from '../config';
 import { useEffect } from "react";
 import { useState } from "react";
 import { useAthenticationContext } from "../components/Authentication";
@@ -13,7 +14,7 @@ const AnnouncementCard = ({ id, onRemove, description, schedule, message }) => {
 
 
     const __cancel__ = () => {
-        axios.delete(`http://localhost:8000/api/announcements/${id}/`).finally(() => {
+        axios.delete(`${API_BASE_URL}/api/announcements/${id}/`).finally(() => {
             onRemove(id);
         });
     }
@@ -68,7 +69,7 @@ const AnnouncementForm = () => {
     }, []);
 
     const __load_schedules__ = () => {
-        axios.get('http://localhost:8000/api/announcements/').then((resp) => {
+        axios.get(`${API_BASE_URL}/api/announcements/`).then((resp) => {
             setSchedules([...resp.data]);
         }).catch(() => {});
     }
@@ -90,7 +91,7 @@ const AnnouncementForm = () => {
         };
         console.log(data)
 
-        axios.post('http://localhost:8000/api/announcements/', data).then((resp) => {
+        axios.post(`${API_BASE_URL}/api/announcements/`, data).then((resp) => {
             setAnncData({ ...DEFUALT_ANNC_DATA });
             setDateSched("");
             setTimeSched("00:00");
