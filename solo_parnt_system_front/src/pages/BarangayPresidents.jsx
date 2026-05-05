@@ -5,6 +5,7 @@ import {
 } from "../components/FormInputs";
 import { useState } from "react";
 import axios from "axios";
+import { API_BASE_URL } from '../config';
 import { useEffect } from "react";
 import { useAthenticationContext } from "../components/Authentication";
 
@@ -85,7 +86,7 @@ const PresForm = ({ id, onRemove }) => {
     }, []);
 
     const __load_pres__ = () => {
-        axios.get(`http://localhost:8000/api/brngpres/${id}/`).then((resp) => {
+        axios.get(`${API_BASE_URL}/api/brngpres/${id}/`).then((resp) => {
             setPres({ ...resp.data });
         }).catch((err) => {
 
@@ -101,7 +102,7 @@ const PresForm = ({ id, onRemove }) => {
     }
 
     const __update__ = () => {
-        axios.put(`http://localhost:8000/api/brngpres/${id}/`, { ...pres }).then((resp) => {
+        axios.put(`${API_BASE_URL}/api/brngpres/${id}/`, { ...pres }).then((resp) => {
             setPres({ ...resp.data });
             setDisabled(true);
         }).catch((err) => {
@@ -111,7 +112,7 @@ const PresForm = ({ id, onRemove }) => {
     }
 
     const __delete__ = () => {
-        axios.delete(`http://localhost:8000/api/brngpres/${id}/`).then((resp) => {
+        axios.delete(`${API_BASE_URL}/api/brngpres/${id}/`).then((resp) => {
             if (onRemove)
                 onRemove(id);
         }).catch((err) => { });
@@ -213,7 +214,7 @@ const BarangayPresidents = () => {
     }, [presidents]);
 
     const __load_brngpress__ = () => {
-        axios.get('http://localhost:8000/api/brngpres/', brngPresData).then((resp) => {
+        axios.get(`${API_BASE_URL}/api/brngpres/`, brngPresData).then((resp) => {
             setPresidents([...resp.data]);
         }).catch((err) => {
 
@@ -229,7 +230,7 @@ const BarangayPresidents = () => {
     }
 
     const __save__ = () => {
-        axios.post('http://localhost:8000/api/brngpres/', brngPresData).then((resp) => {
+        axios.post(`${API_BASE_URL}/api/brngpres/`, brngPresData).then((resp) => {
             __load_brngpress__();
         }).catch((err) => {
             console.log(err)

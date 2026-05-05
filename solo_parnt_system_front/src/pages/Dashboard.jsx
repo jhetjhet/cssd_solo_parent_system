@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios';
+import { API_BASE_URL } from '../config';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import ReactToPrint from 'react-to-print';
@@ -68,7 +69,7 @@ const Dashboard = () => {
     }, []);
 
     const __load_dashboard__ = () => {
-        axios.get('http://localhost:8000/api/parents/dashboard/').then((resp) => {
+        axios.get(`${API_BASE_URL}/api/parents/dashboard/`).then((resp) => {
             const {
                 num_act_inact_solo_parent,
                 num_solo_parent_by_gender,

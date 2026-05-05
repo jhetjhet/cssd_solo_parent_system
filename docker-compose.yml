@@ -1,0 +1,65 @@
+services:
+  db:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-jhet.}
+      MYSQL_DATABASE: ${DB_NAME:-solo_parent_db}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  backend:
+    build: ./solo_parnt_system
+    restart: unless-stopped
+    environment:
+      - SECRET_KEY=${SECRET_KEY}
+      - DB_NAME=${DB_NAME:-solo_parent_db}
+      - DB_USER=${DB_USER:-root}
+      - DB_PASSWORD=${DB_PASSWORD:-jhet.}
+      - DB_HOST=db
+      - DB_PORT=3306
+      - TWILIO_ACC_SID=${TWILIO_ACC_SID:-}
+      - TWILIO_AUTH_TOKEN=${TWILIO_AUTH_TOKEN:-}
+      - TWILIO_FROM_NUMBER=${TWILIO_FROM_NUMBER:-}
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+
+  worker:
+    build: ./solo_parnt_system
+    restart: unless-stopped
+    command: python manage.py process_tasks
+    volumes:
+      - ./solo_parnt_system:/app
+    environment:
+      - SECRET_KEY=${SECRET_KEY}
+      - DB_NAME=${DB_NAME:-solo_parent_db}
+      - DB_USER=${DB_USER:-root}
+      - DB_PASSWORD=${DB_PASSWORD:-jhet.}
+      - DB_HOST=db
+      - DB_PORT=3306
+      - TWILIO_ACC_SID=${TWILIO_ACC_SID:-}
+      - TWILIO_AUTH_TOKEN=${TWILIO_AUTH_TOKEN:-}
+      - TWILIO_FROM_NUMBER=${TWILIO_FROM_NUMBER:-}
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build: ./solo_parnt_system_front
+    restart: unless-stopped
+    depends_on:
+      - backend
+      - worker
+volumes:
+  mysql_data:
