@@ -37,4 +37,4 @@ twilio==7.16.3
 tzdata==2022.7
 uritemplate==4.1.1
 urllib3==1.26.14
-waitress==2.1.2
+gunicorn==21.2.0

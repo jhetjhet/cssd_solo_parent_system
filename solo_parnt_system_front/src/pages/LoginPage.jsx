@@ -1,4 +1,5 @@
 import axios from "axios";
+import { API_BASE_URL } from '../config';
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAthenticationContext } from "../components/Authentication";
@@ -29,7 +30,7 @@ const LoginPage = () => {
         e.preventDefault();
         
         setInvalid(false);
-        axios.post('http://localhost:8000/auth/token/login/', {
+        axios.post(`${API_BASE_URL}/auth/token/login/`, {
             username,
             password,
         }).then((resp) => {

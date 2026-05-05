@@ -7,6 +7,7 @@ import {
 } from "../components/FormInputs";
 import { v4 as uuidv4 } from 'uuid';
 import axios from "axios";
+import { API_BASE_URL } from '../config';
 import { useEffect, useState } from "react";
 import { useLoaderData, useParams } from "react-router-dom";
 import { useAthenticationContext } from "../components/Authentication";
@@ -81,7 +82,7 @@ export async function loader({ params }) {
     let formData;
 
     if (prntId) {
-        const resp = axios.get(`http://localhost:8000/api/parents/${prntId}/`);
+        const resp = axios.get(`${API_BASE_URL}/api/parents/${prntId}/`);
         try {
             formData = await resp;
             formData = formData.data;
@@ -452,9 +453,9 @@ const AppFormSP = () => {
         let action;
 
         if (parentID)
-            action = axios.put(`http://localhost:8000/api/parents/${parentID}/`, DATA);
+            action = axios.put(`${API_BASE_URL}/api/parents/${parentID}/`, DATA);
         else
-            action = axios.post('http://localhost:8000/api/parents/', DATA);
+            action = axios.post(`${API_BASE_URL}/api/parents/`, DATA);
 
         action.then((resp) => {
 
@@ -506,7 +507,7 @@ const AppFormSP = () => {
     }
 
     const __renew__ = () => {
-        axios.post(`http://localhost:8000/api/parents/${parentID}/renew/`).then((resp) => {
+        axios.post(`${API_BASE_URL}/api/parents/${parentID}/renew/`).then((resp) => {
             __load_formdata__(resp.data);
         }).catch((err) => {
 
